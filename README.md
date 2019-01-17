@@ -8,3 +8,5 @@
 <p>4.个人设置：用户可以在个人设置中查看订单、修改个人资料、修改密码。
 <p>5.后台管理：管理员进行后台用户管理、首页推荐影片管理、影片影院及影院排片管理、订单管理以及系统日志。<br>
 ![结构设计图](https://github.com/lyfing95/FilmBase/blob/master/READMEIMG/structure.png)
+       
+      
