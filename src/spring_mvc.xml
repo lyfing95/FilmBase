@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+              
+
+	
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+		
+		http://www.springframework.org/schema/aop 
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd 
+		
+		">
+	 	<!-- 扫描指定包下面的注解 @Controller @Service @Repository -->
+	<context:component-scan base-package="com.lyf.filmbase"></context:component-scan>
+	<!-- 添加mvc的注解驱动 -->
+	<mvc:annotation-driven></mvc:annotation-driven>
+	<!-- 配置解析器对象 -->
+	<bean id="resourceViewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+	
+	 <!-- 配置事务管理器 -->
+   <bean id="transactionManager"
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+   </bean>
+   
+ <!-- <tx:annotation-driven transaction-manager="transactionManager" /> -->
+   <!-- 切面的切入位置-->
+   <!-- <aop:config>
+       <aop:pointcut id="transactionPointcut" expression="execution(* com.lyf.filmbase.biz.impl..*Impl.*(..))" />
+       <aop:advisor pointcut-ref="transactionPointcut" advice-ref="transactionAdvice" />
+   </aop:config> --> 
+   <!-- <tx:annotation-driven/> -->
+    <!-- 配置拦截器 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<!-- 拦截所有mvc控制器 -->
+			<mvc:mapping path="/**"/>
+			<!-- mvc:exclude-mapping是另外一种拦截，它可以在你后来的测试中对某个页面进行不拦截，这样就不用在
+				LoginInterceptor的preHandler方法里面获取不拦截的请求uri地址了(优选) -->
+			<mvc:exclude-mapping path="/user/add.do" />  
+			<mvc:exclude-mapping path="/film/indexMovie.do" />
+			<mvc:exclude-mapping path="/film/getMovieInfo.do" />
+			<mvc:exclude-mapping path="/film/getAllCinema.do" />
+			<mvc:exclude-mapping path="/film/newsInfo.do" />
+			<mvc:exclude-mapping path="/film/mark.do" />
+			<mvc:exclude-mapping path="/film/getAllMovie.do" />
+			<mvc:exclude-mapping path="/film/cinemaList.do" />
+			<mvc:exclude-mapping path="/user/valistr.do" />
+			<mvc:exclude-mapping path="/film/filmSearch.do" />
+			<mvc:exclude-mapping path="/film/getFileImg.do" />
+			<mvc:exclude-mapping path="/film/moviePage.do" />
+			<mvc:exclude-mapping path="/backend/backendLogout.do" />
+			<bean class="com.lyf.filmbase.util.LoginInterceptor"></bean>			
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+</beans>

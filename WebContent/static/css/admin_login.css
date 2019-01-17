@@ -1,0 +1,69 @@
+@charset "utf-8";
+body{
+    font-family:"微软雅黑";
+    background-image:url("../img/login_zc.jpg");
+	background-position:center top;
+	background-repeat:no-repeat;
+}
+form{
+	width: 450px;
+	margin: 0 auto;
+}
+h1{
+	text-align:center;
+	margin-top:190px;
+	margin-bottom:30px;
+	color:#990000;
+}
+table{
+	/*background-color:pink;*/
+    margin:0px auto;
+}
+table tr td{
+	padding-top:10px;
+}
+table tr td.td_txt{
+	text-align:right;
+	font-size:18px;
+}
+table tr td.td_sum{
+	text-align: center;
+}
+table{
+	margin: 0 auto;
+}
+td{
+	padding-top: 10px;
+}
+.tds{
+	font-size: 18px;
+	text-align: right;
+}
+input{
+	width:150px;
+	heigth:22px;
+	border:1px solid #ccc;
+}
+input[name='valistr']{
+	width:80px;
+	vertical-align:middle; /*垂直对齐  中线对齐*/
+}
+input[name="valistr"]+img{
+	vertical-align:middle;
+}
+.td_sub{
+	text-align: center;
+}
+input[type='submit']{
+	border: none;
+	width:127px;
+	height: 44px;
+	font-size: 20px;
+	color: #FFFFFF;
+	font-weight: bolder;
+	background-image: url('../img/login_zc_btn01.jpg');
+}
+input[type='submit']:hover{
+	background-image:url('../img/login_zc_btn02.jpg');
+}
+

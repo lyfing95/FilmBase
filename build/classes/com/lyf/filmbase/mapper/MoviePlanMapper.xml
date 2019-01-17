@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lyf.filmbase.mapper.MoviePlanMapper" >
+  <resultMap id="BaseResultMap" type="com.lyf.filmbase.entity.MoviePlan" >
+    <result column="cinemaid" property="cinemaid" jdbcType="VARCHAR" />
+    <result column="movieid" property="movieid" jdbcType="VARCHAR" />
+    <result column="moviename" property="moviename" jdbcType="VARCHAR" />
+    <result column="moviestarttime" property="moviestarttime" jdbcType="TIMESTAMP" />
+    <result column="movieendtime" property="movieendtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <!--  查询有此影片的影院id -->
+ <select id="selectCinemaHasMovie" resultType="String" parameterType="String" >
+    select   cinemaid
+    from movieplan  
+    where movieid = #{movieid}
+  </select>  
+ 
+  
+  
+  <insert id="insert" parameterType="com.lyf.filmbase.entity.MoviePlan" >
+    insert into movieplan (cinemaid, movieid, moviename, 
+      moviestarttime, movieendtime)
+    values (#{cinemaid,jdbcType=VARCHAR}, #{movieid,jdbcType=VARCHAR}, #{moviename,jdbcType=VARCHAR}, 
+      #{moviestarttime,jdbcType=TIMESTAMP}, #{movieendtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lyf.filmbase.entity.MoviePlan" >
+    insert into movieplan
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="cinemaid != null" >
+        cinemaid,
+      </if>
+      <if test="movieid != null" >
+        movieid,
+      </if>
+      <if test="moviename != null" >
+        moviename,
+      </if>
+      <if test="moviestarttime != null" >
+        moviestarttime,
+      </if>
+      <if test="movieendtime != null" >
+        movieendtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="cinemaid != null" >
+        #{cinemaid,jdbcType=VARCHAR},
+      </if>
+      <if test="movieid != null" >
+        #{movieid,jdbcType=VARCHAR},
+      </if>
+      <if test="moviename != null" >
+        #{moviename,jdbcType=VARCHAR},
+      </if>
+      <if test="moviestarttime != null" >
+        #{moviestarttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="movieendtime != null" >
+        #{movieendtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+</mapper>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lyf.filmbase.mapper.WatchPlanMapper" >
+  <resultMap id="BaseResultMap" type="com.lyf.filmbase.entity.WatchPlan" >
+    <result column="id" property="id" jdbcType="VARCHAR" />
+    <result column="starttime" property="starttime" jdbcType="TIME" />
+    <result column="endtime" property="endtime" jdbcType="TIME" />
+    <result column="language" property="language" jdbcType="VARCHAR" />
+    <result column="hall" property="hall" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="DOUBLE" />
+    <result column="date" property="date" jdbcType="DATE" />
+    <result column="movieid" property="movieid" jdbcType="VARCHAR" />
+    <result column="seatid" property="seatid" jdbcType="VARCHAR" />
+    <association property="cinemaplan" javaType="com.lyf.filmbase.entity.CinemaPlan">
+     <result column="movieid" property="movieid" jdbcType="VARCHAR"/>
+     <result column="cinemaid" property="cinemaid" jdbcType="VARCHAR"/>
+     <result column="watchid" property="watchid" jdbcType="VARCHAR"/>
+   </association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id,date, starttime, endtime, language, hall, price,movieid,seatid
+  </sql> 
+ 
+ <select id="selectWatchByIds" resultMap="BaseResultMap" parameterType="map" >
+    select watchplan.* from watchplan,cinemaplan where watchplan.id = cinemaplan.watchid and cinemaplan.movieid=#{movieid}  and cinemaplan.cinemaid=#{cinemaid}
+  </select>
+  <!-- 查询所选日期的排片计划 -->
+  <select id="selectDateForWatchPlan" resultMap="BaseResultMap" parameterType="map" >
+    select
+    <include refid="Base_Column_List" />
+    from watchplan
+    where date = #{date} and movieid = #{movieid}
+  </select>
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from watchplan
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from watchplan
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.lyf.filmbase.entity.WatchPlan" >
+    insert into watchplan (id, starttime, endtime, language, hall, price)
+    values (#{id,jdbcType=VARCHAR}, #{starttime,jdbcType=TIME}, #{endtime,jdbcType=TIME}, 
+      #{language,jdbcType=VARCHAR}, #{hall,jdbcType=VARCHAR}, #{price,jdbcType=DOUBLE}), #{date,jdbcType=DATE}),
+      #{movieid,jdbcType=VARCHAR}),#{seatid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lyf.filmbase.entity.WatchPlan" >
+    insert into watchplan
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="starttime != null" >
+        starttime,
+      </if>
+      <if test="endtime != null" >
+        endtime,
+      </if>
+      <if test="language != null" >
+        language,
+      </if>
+      <if test="hall != null" >
+        hall,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+      <if test="date != null" >
+        date,
+      </if>
+      <if test="movieid != null" >
+        movieid,
+      </if>
+      <if test="seatid != null" >
+        seatid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="starttime != null" >
+        #{starttime,jdbcType=TIME},
+      </if>
+      <if test="endtime != null" >
+        #{endtime,jdbcType=TIME},
+      </if>
+      <if test="language != null" >
+        #{language,jdbcType=VARCHAR},
+      </if>
+      <if test="hall != null" >
+        #{hall,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="date != null" >
+        #{date,jdbcType=DATE},
+      </if>
+      <if test="movieid != null" >
+        #{movieid,jdbcType=VARCHAR},
+      </if>
+      <if test="seatid != null" >
+        #{seatid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lyf.filmbase.entity.WatchPlan" >
+    update watchplan
+    <set >
+      <if test="starttime != null" >
+       starttime = #{starttime,jdbcType=TIME},
+      </if>
+      <if test="endtime != null" >
+        endtime = #{endtime,jdbcType=TIME},
+      </if>
+      <if test="language != null" >
+        language = #{language,jdbcType=VARCHAR},
+      </if>
+      <if test="hall != null" >
+        hall = #{hall,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        price = #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="date != null" >
+        date = #{date,jdbcType=DATE},
+      </if>
+      <if test="movieid != null" >
+        movieid = #{movieid,jdbcType=VARCHAR},
+      </if>
+      <if test="seatid != null" >
+        seatid = #{seatid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lyf.filmbase.entity.WatchPlan" >
+    update watchplan
+    set starttime = #{starttime,jdbcType=TIME},
+      endtime = #{endtime,jdbcType=TIME},
+      language = #{language,jdbcType=VARCHAR},
+      hall = #{hall,jdbcType=VARCHAR},
+      price = #{price,jdbcType=DOUBLE},
+      date = #{date,jdbcType=DATE},
+      movieid = #{movieid,jdbcType=VARCHAR},
+      seatid = #{seatid,jdbcType=VARCHAR},
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

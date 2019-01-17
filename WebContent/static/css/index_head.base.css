@@ -1,0 +1,33 @@
+
+li{
+   list-style:none;
+}
+
+.example2 {
+	margin: 0 auto;
+}
+
+.example2 ol {
+    position: relative;
+    width: 180px;
+    height: 20px;
+    top: -55px;
+    right: 30px;
+	margin: 0 auto;
+}
+
+.example2 ol li {
+    float: right;
+    width: 10px;
+    height: 10px;
+    margin: 15px;
+    border: 1px solid #fff;
+    border-radius: 10px;
+    cursor: pointer;
+	
+}
+
+.example2 ol li.seleted {
+    background: #fff;
+    background: yellow;
+}

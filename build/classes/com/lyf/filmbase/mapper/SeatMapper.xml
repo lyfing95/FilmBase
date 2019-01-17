@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lyf.filmbase.mapper.SeatMapper" >
+  <resultMap id="BaseResultMap" type="com.lyf.filmbase.entity.Seat" >
+    <result column="seatid" property="seatid" jdbcType="VARCHAR" />
+    <result column="seatx" property="seatx" jdbcType="VARCHAR" />
+    <result column="seaty" property="seaty" jdbcType="VARCHAR" />
+    <result column="cinemaid" property="cinemaid" jdbcType="VARCHAR" />
+    <result column="planid" property="planid" jdbcType="VARCHAR" />
+    <result column="oddseat" property="oddseat" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <!-- 已存在座位 -->
+  <select id="selectSeatExist" resultMap="BaseResultMap" parameterType="map">
+    select * from seat where seatx=#{seatx} and seaty=#{seaty}
+  </select>
+  <!-- 失效订单进行删除 -->
+  <delete id="deleteFailSeat" parameterType="java.lang.String">
+    delete from seat
+    where seatid = #{seatid}
+  </delete>
+  <!--  查询已选座位 -->
+  <select id="selectedSeat" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select * from seat where planid=#{seatid}
+  </select>
+  <!--  查询选定座位信息 -->
+  <select id="selectSeat" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select * from seat where seatid = #{seatid}
+  </select>
+  
+  <update id="updateSeatyBySeatId" parameterType="String" >
+    update seat
+    <set >
+      <if test="seaty != null" >
+        seaty = #{seaty,jdbcType=VARCHAR},
+      </if>
+      <if test="seatx != null" >
+        seatx = #{seatx,jdbcType=VARCHAR},
+      </if>
+      where seatid = #{seatid}
+    </set>
+  </update>
+  
+  <insert id="insert" parameterType="com.lyf.filmbase.entity.Seat" >
+    insert into seat (seatid, seatx ,seaty,cinemaid, planid, 
+      oddseat)
+    values (#{seatid,jdbcType=VARCHAR},#{seatx,jdbcType=VARCHAR},#{seaty,jdbcType=VARCHAR} #{cinemaid,jdbcType=VARCHAR}, #{planid,jdbcType=VARCHAR}, 
+      #{oddseat,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="map" >
+    insert into seat
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="seatid != null" >
+        seatid,
+      </if>
+      <if test="seatx != null" >
+        seatx,
+      </if>
+      <if test="seaty != null" >
+        seaty,
+      </if>
+      <if test="cinemaid != null" >
+        cinemaid,
+      </if>
+      <if test="planid != null" >
+        planid,
+      </if>
+      <if test="oddseat != null" >
+        oddseat,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="seatid != null" >
+        #{seatid,jdbcType=VARCHAR},
+      </if>
+      <if test="seatx != null" >
+        #{seatx,jdbcType=VARCHAR},
+      </if>
+      <if test="seaty != null" >
+        #{seaty,jdbcType=VARCHAR},
+      </if>
+      <if test="cinemaid != null" >
+        #{cinemaid,jdbcType=VARCHAR},
+      </if>
+      <if test="planid != null" >
+        #{planid,jdbcType=VARCHAR},
+      </if>
+      <if test="oddseat != null" >
+        #{oddseat,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+</mapper>

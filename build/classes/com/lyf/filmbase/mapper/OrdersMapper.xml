@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lyf.filmbase.mapper.OrdersMapper" >
+  <resultMap id="BaseResultMap" type="com.lyf.filmbase.entity.Orders" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="userid" property="userid" jdbcType="VARCHAR" />
+    <result column="seatid" property="seatid" jdbcType="VARCHAR" />
+    <result column="watchid" property="watchid" jdbcType="VARCHAR" />
+    <result column="number" property="number" jdbcType="INTEGER" />
+    <result column="payment" property="payment" jdbcType="INTEGER" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <association property="watchplan" javaType="com.lyf.filmbase.entity.WatchPlan">
+     <id column="wid" property="id" jdbcType="VARCHAR"/>
+     <result column="price" property="price" jdbcType="DOUBLE"/>
+     <result column="date" property="date" jdbcType="DATE"/>
+     <result column="starttime" property="starttime" jdbcType="TIME"/>
+     <result column="endtime" property="endtime" jdbcType="TIME"/>
+     <result column="language" property="language" jdbcType="VARCHAR"/>
+     <result column="hall" property="hall" jdbcType="VARCHAR"/>
+   </association> 
+   <association property="cinemaplan" javaType="com.lyf.filmbase.entity.CinemaPlan">
+     <result column="cinemaid" property="cinemaid" jdbcType="VARCHAR"/>
+     <result column="cwatchid" property="watchid" jdbcType="VARCHAR"/>
+     <result column="movieid" property="movieid" jdbcType="VARCHAR"/>
+   </association> 
+   <association property="cinema" javaType="com.lyf.filmbase.entity.Cinema">
+     <id column="cid" property="id" jdbcType="VARCHAR"/>
+     <result column="cname" property="name" jdbcType="VARCHAR"/>
+     <result column="address" property="address" jdbcType="VARCHAR"/>
+     <result column="tell" property="tell" jdbcType="VARCHAR"/>
+   </association> 
+   <association property="movie" javaType="com.lyf.filmbase.entity.Movie">
+     <id column="mid" property="id" jdbcType="VARCHAR"/>
+     <result column="mname" property="name" jdbcType="VARCHAR"/>
+   </association>
+   <association property="seat" javaType="com.lyf.filmbase.entity.Seat">
+     <result column="stid" property="seatid" jdbcType="VARCHAR"/>
+     <result column="seatx" property="seatx" jdbcType="VARCHAR"/>
+     <result column="seaty" property="seaty" jdbcType="VARCHAR"/>
+   </association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, userid, seatid, watchid, number, payment, time, status
+  </sql>
+  
+  
+  <!-- 查询失效订单座位号 -->
+  <select id="selectFailSeat" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select seatid from orders
+    where id=#{id}
+  </select>
+  <!-- 查询状态为0的失效订单进行删除 -->
+  <delete id="deleteFailOrder" parameterType="java.lang.String">
+    delete from orders
+    where id=#{id}
+  </delete>
+  <select id="selectOrdersSeat" resultType="map" parameterType="java.lang.String" >
+      select seat.seatx,seat.seaty
+       from orders,seat
+       where orders.seatid=seat.seatid and orders.id = #{0}
+   </select> 
+   <!--  查询订单详情 -->
+     <select id="selectOrdersByOrdersid" resultType="map" parameterType="java.lang.String" >
+      select orders.id,orders.watchid,orders.userid,orders.number,orders.payment,orders.time,
+              watchplan.movieid,watchplan.price as wprice,watchplan.language,watchplan.hall,watchplan.starttime,watchplan.endtime,watchplan.date,
+              cinemaplan.cinemaid,cinemaplan.watchid,cinemaplan.movieid,
+              cinema.id,cinema.name as cname,
+               movie.id,movie.name as mname
+       from orders,watchplan,cinemaplan,cinema,movie
+       where orders.watchid=watchplan.id and watchplan.movieid=cinemaplan.movieid and watchplan.id=cinemaplan.watchid 
+          and cinemaplan.cinemaid=cinema.id and movie.id=cinemaplan.movieid and  orders.id = #{0}
+   </select>  
+<!--  查询登录用户的所有订单详情 -->
+    <select id="selectAllOrdersByUserid" resultType="map" parameterType="com.lyf.filmbase.entity.Orders">
+      select orders.id,orders.watchid,orders.userid,orders.number,orders.payment,orders.time,
+              watchplan.movieid,watchplan.price as wprice,
+              cinemaplan.cinemaid,cinemaplan.watchid,cinemaplan.movieid,
+              cinema.id,cinema.name as cname
+       from orders,watchplan,cinemaplan,cinema
+       where orders.watchid=watchplan.id and watchplan.movieid=cinemaplan.movieid and watchplan.id=cinemaplan.watchid 
+          and cinemaplan.cinemaid=cinema.id and userid = #{userid} and orders.status='1' order by orders.time  desc
+   </select>  
+ <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from orders
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from orders
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.lyf.filmbase.entity.Orders" >
+    insert into orders (id, userid, seatid, 
+      watchid, number, payment, time, status)
+    values (#{id,jdbcType=VARCHAR}, #{userid,jdbcType=VARCHAR}, #{seatid,jdbcType=VARCHAR}, 
+      #{watchid,jdbcType=VARCHAR}, #{number,jdbcType=INTEGER}, #{payment,jdbcType=INTEGER},
+      #{time,jdbcType=TIMESTAMP} , #{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lyf.filmbase.entity.Orders" >
+    insert into orders
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="watchid != null" >
+        watchid,
+      </if>
+      <if test="seatid != null" >
+        seatid,
+      </if>
+     <if test="number != null" >
+        number,
+      </if>
+      <if test="payment != null" >
+        payment,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="watchid != null" >
+        #{watchid,jdbcType=VARCHAR},
+      </if>
+      <if test="seatid != null" >
+        #{seatid,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null" >
+        #{number,jdbcType=INTEGER},
+      </if>
+      <if test="payment != null" >
+        #{payment,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lyf.filmbase.entity.Orders" >
+    update orders
+    <set >
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="watchid != null" >
+        watchid = #{watchid,jdbcType=VARCHAR},
+      </if>
+      <if test="seatid != null" >
+        seatid = #{seatid,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null" >
+        number = #{number,jdbcType=INTEGER},
+      </if>
+      <if test="payment != null" >
+        payment = #{payment,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lyf.filmbase.entity.Orders" >
+    update orders
+    set userid = #{userid,jdbcType=VARCHAR},
+      watchid = #{watchid,jdbcType=VARCHAR},
+      seatid = #{seatid,jdbcType=VARCHAR},
+      number = #{number,jdbcType=INTEGER},
+      payment = #{payment,jdbcType=INTEGER},
+      time = #{time,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=VARCHAR},
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

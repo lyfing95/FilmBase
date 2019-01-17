@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lyf.filmbase.mapper.ReviewMapper" >
+  <resultMap id="BaseResultMap" type="com.lyf.filmbase.entity.Review" >
+    <result column="userid" property="userid" jdbcType="VARCHAR" />
+    <result column="movieid" property="movieid" jdbcType="VARCHAR" />
+    <result column="contents" property="contents" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+    <association property="user" javaType="com.lyf.filmbase.entity.User">
+     <id column="id" property="id" jdbcType="VARCHAR"/>
+     <result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+     <result column="profilehead" property="profilehead" jdbcType="VARCHAR"/>
+   </association> 
+  </resultMap>
+  <!-- 按分页数分离 -->
+  <select id="pagingReview" parameterType="com.lyf.filmbase.entity.Review" resultType = "map">
+	 select review.userid ,review.movieid,review.contents,review.time,user.nickname,user.profilehead,user.id
+	 from review,user
+	 where  user.id = review.userid and  movieid  = #{movieid}
+	 ORDER BY time DESC  limit #{start},#{rows} 
+ </select> 
+<!--  查询选定的电影id查出对应的用户id -->
+  <select id="useridFromReview" resultType="com.lyf.filmbase.entity.Review">
+	 select userid from review
+	 where movieid  = #{movieid} 
+ </select> 
+<!-- 搜索选定影片的全部评论 -->
+  <select id="selectReview" resultType = "map" parameterType="String">
+    select * from review where movieid  = #{movieid} 
+  </select>
+  <insert id="insert" parameterType="com.lyf.filmbase.entity.Review" >
+    insert into review (userid,  movieid, 
+      contents,time
+      )
+    values (#{userid,jdbcType=VARCHAR}, #{movieid,jdbcType=VARCHAR}, 
+      #{contents,jdbcType=VARCHAR}, #{time,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.lyf.filmbase.entity.Review" >
+    insert into review
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userid != null" >
+        userid,
+      </if>
+     <if test="movieid != null" >
+        movieid,
+      </if>
+      <if test="contents != null" >
+        contents,
+      </if>
+     <if test="time != null" >
+        time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userid != null" >
+        #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="movieid != null" >
+        #{movieid,jdbcType=VARCHAR},
+      </if>
+      <if test="contents != null" >
+        #{contents,jdbcType=VARCHAR},
+      </if>
+       <if test="time != null" >
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+</mapper>

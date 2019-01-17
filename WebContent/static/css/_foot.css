@@ -1,0 +1,10 @@
+#foot {
+    position: absolute;
+	top: 2060px;
+	left:200px;
+	width: 1500px;
+	height: 150px;
+	margin-bottom:30px;
+	background-color:#999999; 
+	box-shadow: 0 0 8px gray;
+}

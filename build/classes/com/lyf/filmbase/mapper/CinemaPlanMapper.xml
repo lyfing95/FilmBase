@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lyf.filmbase.mapper.CinemaPlanMapper" >
+  <resultMap id="BaseResultMap" type="com.lyf.filmbase.entity.CinemaPlan" >
+    <result column="cinemaid" property="cinemaid" jdbcType="VARCHAR" />
+    <result column="watchid" property="watchid" jdbcType="VARCHAR" />
+    <result column="movieid" property="movieid" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- 根据订单中返回到排片计划中的movieid和排片id在cinemaplan中查询影院id -->
+ <!-- <select id="selectCinemaForPersonalOrders" resultMap="BaseResultMap" parameterType="map">
+   select cinemaid 
+   from cinemaplan 
+   where movieid = #{movieid} and watchid = #{watchid}
+  </select> -->
+ <!-- 查询影院排片计划的id -->
+  <select id="selectWatchPlanKey" resultType="String" parameterType="String">
+   select watchid 
+   from cinemaplan 
+   where cinemaid = #{cinemaid}
+  </select>
+  <!--  查询有此影院的影片id -->
+ <select id="selectMovieForCinema" resultType="String" parameterType="String" >
+    select  movieid 
+    from cinemaplan  
+    where cinemaid = #{cinemaid}
+  </select>
+  <!--  查询有此影片的影院id -->
+ <select id="selectCinemaHasMovie" resultType="String" parameterType="String" >
+    select   cinemaid
+    from cinemaplan  
+    where movieid = #{movieid}
+  </select>  
+  
+  <insert id="insert" parameterType="com.lyf.filmbase.entity.CinemaPlan" >
+    insert into cinemaplan (cinemaid, watchid)
+    values (#{cinemaid,jdbcType=VARCHAR}, #{watchid,jdbcType=VARCHAR},#{movieid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lyf.filmbase.entity.CinemaPlan" >
+    insert into cinemaplan
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="cinemaid != null" >
+        cinemaid,
+      </if>
+      <if test="watchid != null" >
+        watchid,
+      </if>
+      <if test="movieid != null" >
+        movieid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="cinemaid != null" >
+        #{cinemaid,jdbcType=VARCHAR},
+      </if>
+      <if test="watchid != null" >
+        #{watchid,jdbcType=VARCHAR},
+      </if>
+      <if test="watchid != null" >
+        #{movie,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

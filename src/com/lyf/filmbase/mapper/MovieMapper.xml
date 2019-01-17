@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lyf.filmbase.mapper.MovieMapper" >
+  <resultMap id="BaseResultMap" type="com.lyf.filmbase.entity.Movie" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="contents" property="contents" jdbcType="VARCHAR" />
+    <result column="mark" property="mark" jdbcType="DOUBLE" />
+    <result column="duration" property="duration" jdbcType="INTEGER" />
+    <result column="price" property="price" jdbcType="DOUBLE" />
+    <result column="imgurl" property="imgurl" jdbcType="VARCHAR" />
+    <result column="flag" property="flag" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, contents, mark, duration, price, imgurl, flag
+  </sql>
+  
+  <select id="selectMark" resultMap="BaseResultMap" >
+    select * from movie order by mark desc
+  </select>
+  <!-- 查询首页最新影片 -->
+  <select id="selectNewestMovie" resultMap="BaseResultMap" >
+    select  *
+   from movie where flag='1' 
+  </select>
+  <!-- 查询首页热映影片 -->
+  <select id="selectHotMovie" resultMap="BaseResultMap">
+    select  *
+   from movie where flag='2' 
+  </select>
+ <!--  按分页数分离 -->
+ <select id="pagingMovie" resultType="com.lyf.filmbase.entity.Movie">
+	select * from movie limit #{start},#{rows}
+ </select>
+ <!--  分页影片总数 (有问题)-->
+  <select id="selectMovieCount" resultMap="BaseResultMap">
+    select count(*) from movie
+  </select>  
+  <!-- 查询全部影片 -->
+  <select id="selectAllMovie" resultMap="BaseResultMap">
+    select  
+   <include refid="Base_Column_List" />
+    from movie
+  </select>  
+   <!-- 影片搜索 -->
+   <select id="selectMovieSearch" resultMap="BaseResultMap" parameterType="String" >
+    select  
+     <include refid="Base_Column_List" />
+    from movie  
+    where name like concat('%',#{name},'%')   <!-- concat:String类型连接函数 -->
+  </select> 
+  
+  
+  
+ <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from movie
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from movie
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.lyf.filmbase.entity.Movie" >
+    insert into movie (id, name, contents, 
+      mark, duration, price ,imgurl,flag
+      )
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{contents,jdbcType=VARCHAR}, 
+      #{mark,jdbcType=DOUBLE}, #{duration,jdbcType=INTEGER}, #{price,jdbcType=DOUBLE}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.lyf.filmbase.entity.Movie" >
+    insert into movie
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="contents != null" >
+        contents,
+      </if>
+      <if test="mark != null" >
+        mark,
+      </if>
+      <if test="duration != null" >
+        duration,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+      <if test="imgurl != null" >
+        imgurl,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="contents != null" >
+        #{contents,jdbcType=VARCHAR},
+      </if>
+      <if test="mark != null" >
+        #{mark,jdbcType=DOUBLE},
+      </if>
+      <if test="duration != null" >
+        #{duration,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="imgurl != null" >
+        #{imgurl,jdbcType=VARCHAR},
+      </if>
+     </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lyf.filmbase.entity.Movie" >
+    update movie
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="contents != null" >
+        contents = #{contents,jdbcType=VARCHAR},
+      </if>
+      <if test="mark != null" >
+        mark = #{mark,jdbcType=DOUBLE},
+      </if>
+      <if test="duration != null" >
+        duration = #{duration,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        price = #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="imgurl != null" >
+        imgurl = #{imgurl,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        flag = #{flag,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lyf.filmbase.entity.Movie" >
+    update movie
+    set name = #{name,jdbcType=VARCHAR},
+      contents = #{contents,jdbcType=VARCHAR},
+      mark = #{mark,jdbcType=DOUBLE},
+      duration = #{duration,jdbcType=INTEGER},
+      price = #{price,jdbcType=DOUBLE}
+      imgurl = #{imgurl,jdbcType=VARCHAR},
+      flag = #{flag,jdbcType=VARCHAR},
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

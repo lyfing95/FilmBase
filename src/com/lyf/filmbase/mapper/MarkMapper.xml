@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lyf.filmbase.mapper.MarkMapper" >
+  <resultMap id="BaseResultMap" type="com.lyf.filmbase.entity.Mark" >
+    <result column="userid" property="userid" jdbcType="VARCHAR" />
+    <result column="mark" property="mark" jdbcType="DOUBLE" />
+    <result column="movieid" property="movieid" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="selectMovieMark" resultMap="BaseResultMap" parameterType="com.lyf.filmbase.entity.Mark">
+      select movieid,avg(mark) as mark from mark where movieid=#{movieid}
+  </select>
+  <select id="selectMarkAll" resultMap="BaseResultMap" parameterType="com.lyf.filmbase.entity.Mark">
+      select * from mark 
+  </select>
+  <select id="selectMarkExist" resultMap="BaseResultMap" parameterType="com.lyf.filmbase.entity.Mark">
+      select mark from mark where userid=#{userid} and movieid=#{movieid}
+  </select>
+  <insert id="insertMark" parameterType="com.lyf.filmbase.entity.Mark" >
+    insert into mark (userid, mark ,movieid)
+    values (#{userid,jdbcType=VARCHAR}, #{mark,jdbcType=DOUBLE}, #{movieid,jdbcType=VARCHAR})
+  </insert>
+</mapper>
